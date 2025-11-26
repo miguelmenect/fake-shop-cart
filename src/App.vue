@@ -1,11 +1,5 @@
-<script setup></script>
-
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <div id="app-container">
+    <RouterView /> // --- renderiza o componente na tela de acordo com a url atual
+  </div>
 </template>
-
-<style scoped></style>

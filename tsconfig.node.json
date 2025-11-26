@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": [
+      "node"
+    ] // Importa os tipos necessários para usar a API do Node (como fileURLToPath)
+  },
+  // Indica ao TS para usar esta configuração apenas para o arquivo vite.config.ts
+  "include": [
+    "vite.config.ts"
+  ]
+}
