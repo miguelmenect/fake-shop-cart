@@ -29,8 +29,12 @@
     <!--se o isCartOpen for vedadeiro ele exibe o container de overlay e o componente de carrinho-->
     <!--se o container de overlay for clicado ele deixa o isCartOpen como false, fechando overlay e carrinho-->
     <div v-if="isCartOpen" class="cart-overlay" @click="closeCart"> 
-    <!--componente de carrinho sendo renderizado--> 
-    <CartDrawer />                                                  
+    <!--componente de carrinho sendo renderizado-->
+     <div @click.stop> <!-- modificador de evento que impede o clique de propagar para o carrinho--> 
+       <CartDrawer 
+       @close="closeCart" 
+       /> <!-- aqui estou passando para cartdrawer o evento close de fechar carrinho-->                                                 
+     </div>
     </div>
   </div>
 
@@ -147,6 +151,8 @@ onMounted(() => {
   position: fixed;
   width: 100vw;
   height: 100vw;
+  top: 0;
+  left: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }

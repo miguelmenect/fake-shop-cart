@@ -1,34 +1,40 @@
 <template>
   <div class="card-container">
     <div class="product-image">      
-      <img src="" :alt="product.name" />
+      <img :src="product.image" :alt="product.name" />
     </div>
     <div class="product-details">
-      <h3>{{product.name}}</h3>
-      <p>{{product.price}}</p>
-      <p>
-        {{product.description}}
-      </p>
+      <h3>{{ product.name }}</h3>
+      <p>R$ {{ formatPrice(product.price) }}</p>
+      <p>{{ product.description }}</p>
       <div>
-      <button class="add-cart">Adicionar ao carrinho</button>
+        <button class="add-cart" @click="handleAddToCart">
+          Adicionar ao carrinho
+        </button>
+      </div>
     </div>
-    </div>
-    
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@/services/api'; // importa a tipagem Product para tipar as props
+import type { Product } from '@/services/api';
+import { useCart } from '@/composables/useCart'; // importa o composable useCart
 
 interface Props {
-  product: Product; //tipo da prop product é Product
+  product: Product;
 }
 
-defineProps<Props>(); //guarda as props que vem de seu pai homeview, para poder usar no card de produto
+const props = defineProps<Props>();
+const { addToCart } = useCart(); // aqui estamos pegando a função addToCart do composable useCart para usar
 
-const formatPrice = (price: number): string => { //função que formata o preço para padrões brasileiros
-  return price.toFixed(2).replace('.', ','); //substitui o ponto por vírgula
+const formatPrice = (price: number): string => {
+  return price.toFixed(2).replace('.', ',');
 };
+
+// funçao que adiciona o produto ao carrinho
+const handleAddToCart = () => {
+  addToCart(props.product); //adiciona o produto ao carrinho, produtos são os que
+  };                       //foram passados como props através do v-for em Homeview
 </script>
 
 <style scoped>
