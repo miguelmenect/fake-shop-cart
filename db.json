@@ -23,6 +23,14 @@
       "description": "Chave de fenda cruzada (Phillips) com ponta magnetizada.",
       "image": "/images/chave-phillips.jpg",
       "category_id": 103
+    },
+    {
+      "id": 4,
+      "name": "Chocolate meio amargo",
+      "price": 14.30,
+      "description": "Chocolate delicioso amargo 70% cacau, barra de 100g.",
+      "image": "/images/chocolate.jpg",
+      "category_id": 102
     }
   ],
   "categories": [
