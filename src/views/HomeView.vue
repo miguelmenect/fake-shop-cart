@@ -10,10 +10,16 @@
     <div class="container-catalog">
       <h2>NOSSOS PRODUTOS</h2>
       <div class="products-catalog">
+        <!--componente de card dos produtos sendo renderizado-->  
         <ProductCard />             
       </div>
     </div>
-    <CartDrawer v-if="isCartOpen"/>
+    <!--se o isCartOpen for vedadeiro ele exibe o container de overlay e o componente de carrinho-->
+    <!--se o container de overlay for clicado ele deixa o isCartOpen como false, fechando overlay e carrinho-->
+    <div v-if="isCartOpen" class="cart-overlay" @click="closeCart"> 
+    <!--componente de carrinho sendo renderizado--> 
+    <CartDrawer />                                                  
+    </div>
   </div>
 
 </template>
@@ -29,6 +35,11 @@ const toggleCart = () => {
   // alterna o estado atual do carrinho entre aberto e fechado
   isCartOpen.value = !isCartOpen.value;
 };
+
+const closeCart = () => {
+  isCartOpen.value = false; //fecha o carrinho caso clique no overlay, no caso fora do carrinho
+};
+
 </script>
 
 <!--- estilização da pagina home --->
@@ -96,5 +107,14 @@ const toggleCart = () => {
   height: 400px;
   padding: 10px 20px;
   border: 1px solid black;
+}
+
+/*overlay para quando o carrinho estiver aberto*/
+.cart-overlay{
+  position: fixed;
+  width: 100vw;
+  height: 100vw;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
 }
 </style> 
