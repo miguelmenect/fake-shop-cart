@@ -9,9 +9,21 @@
     </div>
     <div class="container-catalog">
       <h2>NOSSOS PRODUTOS</h2>
+
+      <div v-if="loading">
+        <p>Carregando produtos...</p>
+      </div>
+
       <div class="products-catalog">
         <!--componente de card dos produtos sendo renderizado-->  
-        <ProductCard />             
+        <ProductCard 
+         v-for="product in products"
+        :key="product.id" 
+        :product="product"        
+        />    
+        <!--:v-for um laço de repetição que percorre o array products -->
+        <!--:key identifica unicamente cada card pelo id do produto-->
+        <!--:product= é nome da prop que está sendo passada para o componente ProductCard-->   
       </div>
     </div>
     <!--se o isCartOpen for vedadeiro ele exibe o container de overlay e o componente de carrinho-->
@@ -25,11 +37,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue'; //ref = ao usestate em react
 import ProductCard from '@/components/ProductCard.vue';
 import CartDrawer from '@/components/CartDrawer.vue';
+import { getProducts, type Product } from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
 
 const isCartOpen = ref(false); // estado para controlar a visibilidade do carrinho(começa em false)
+const products = ref<Product[]>([]); //array de produtos no api, tipado como Product
+const loading = ref(true); //carregando produtos, enquanto eles não foram exibidos
+const error = ref<string | null>(null); //erro ao carregar produtos
 
 const toggleCart = () => {
   // alterna o estado atual do carrinho entre aberto e fechado
@@ -39,7 +55,22 @@ const toggleCart = () => {
 const closeCart = () => {
   isCartOpen.value = false; //fecha o carrinho caso clique no overlay, no caso fora do carrinho
 };
+const fetchProducts = async () => { // função assíncrona (espera api retornar) para buscar produtos da API
+  try{
+    loading.value = true; //exibe carregando enquanto busca produtos
+    error.value = null; //limpa qualquer erro anterior
+    products.value = await getProducts(); //busca produtos da api, pelo getProducts e guarda no estado products
+  }catch (err){
+    error.value = 'Erro ao carregar produtos!!!';
+    //console.log("ERRO: ", err);
+  }finally{
+    loading.value = false; //desativa carregando após tentativa de busca
+  }
+};
 
+onMounted(() => {
+  fetchProducts(); //só executa a função fetchproduts quando o a página(homeview) for carregada, montada
+});
 </script>
 
 <!--- estilização da pagina home --->
@@ -105,6 +136,8 @@ const closeCart = () => {
 .products-catalog  {
   width: 100%;   
   height: 400px;
+  display: inline-flex;
+  gap: 20px;
   padding: 10px 20px;
   border: 1px solid black;
 }

@@ -1,22 +1,35 @@
 <template>
   <div class="card-container">
     <div class="product-image">      
-      <img src="" alt="" />
+      <img src="" :alt="product.name" />
     </div>
     <div class="product-details">
-      <h3>Product Name</h3>
-      <p>R$ 99,99</p>
+      <h3>{{product.name}}</h3>
+      <p>{{product.price}}</p>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-        sed do eiusmod tempor incididunt. 
+        {{product.description}}
       </p>
       <div>
-      <button class="add-cart">Add to Cart</button>
+      <button class="add-cart">Adicionar ao carrinho</button>
     </div>
     </div>
     
   </div>
 </template>
+
+<script setup lang="ts">
+import type { Product } from '@/services/api'; // importa a tipagem Product para tipar as props
+
+interface Props {
+  product: Product; //tipo da prop product é Product
+}
+
+defineProps<Props>(); //guarda as props que vem de seu pai homeview, para poder usar no card de produto
+
+const formatPrice = (price: number): string => { //função que formata o preço para padrões brasileiros
+  return price.toFixed(2).replace('.', ','); //substitui o ponto por vírgula
+};
+</script>
 
 <style scoped>
 .card-container {
