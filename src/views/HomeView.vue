@@ -1,10 +1,10 @@
-//---estrutura da pagina home
+<!---estrutura da pagina home--->
 <template>
   <div class="home-page">
     <div class="container-nav">
     <nav class="navbar"> 
       <h3>MyShop!</h3>
-      <button class="cart-btn">O</button>
+      <button class="cart-btn" @click="toggleCart">O</button> <!-- botão do carrinho de compras -->
     </nav>
     </div>
     <div class="container-catalog">
@@ -13,16 +13,25 @@
         <ProductCard />             
       </div>
     </div>
+    <CartDrawer v-if="isCartOpen"/>
   </div>
 
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
 import ProductCard from '@/components/ProductCard.vue';
+import CartDrawer from '@/components/CartDrawer.vue';
 
+const isCartOpen = ref(false); // estado para controlar a visibilidade do carrinho(começa em false)
+
+const toggleCart = () => {
+  // alterna o estado atual do carrinho entre aberto e fechado
+  isCartOpen.value = !isCartOpen.value;
+};
 </script>
 
-//---estilização da pagina home
+<!--- estilização da pagina home --->
 <style scoped>
 * {
   box-sizing: border-box;
@@ -81,6 +90,7 @@ import ProductCard from '@/components/ProductCard.vue';
   gap: 14px;
   /*border: 1px solid black;*/
 }
+
 .products-catalog  {
   width: 100%;   
   height: 400px;
