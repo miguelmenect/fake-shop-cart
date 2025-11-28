@@ -1,6 +1,7 @@
 <template>
   <div class="card-container">
-    <div class="product-image">      
+    <div class="product-image">
+      <div class="category-label">sdsdsdsd</div>    
       <img :src="product.image" :alt="product.name" />
     </div>
     <div class="product-details">
@@ -47,7 +48,14 @@ const handleAddToCart = () => {
   overflow: hidden;
   background-color: white;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
-  transition: transform 0.3s ease;  
+  transition: transform 0.3s ease; 
+  cursor: pointer; 
+}
+
+.card-container:hover{
+  transform: scale(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+  border-color: #36CA6A;
 }
 
 .product-image {
@@ -61,6 +69,21 @@ const handleAddToCart = () => {
   width: 100%;
   height: 100%;
   object-fit:cover;
+}
+
+.category-label{
+  display:flex;
+  margin-top:7px;
+  margin-left:5px;
+  width:70px;
+  height:20px;
+  position:absolute;
+  background-color: white;
+  border-radius: 12px;
+  justify-content:center;
+  align-items:center;
+  font-size:12px;
+  color:#221E6B;
 }
 
 .product-details {
@@ -93,6 +116,14 @@ const handleAddToCart = () => {
   line-height: 1.4;
 }
 
+.product-details div{
+  /*border: 1px solid black;*/
+  height:40px;  
+  display:flex;
+  align-items:center;
+  justify-content: center;
+}
+
 .add-cart {
   width: 100%;
   height: 38px;
@@ -108,6 +139,7 @@ const handleAddToCart = () => {
 }
 
 .add-cart:hover {
-  background-color: #27b458ff;  
+  background-color: #27b458ff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 </style>

@@ -3,8 +3,16 @@
   <div class="home-page">
     <div class="container-nav">
     <nav class="navbar"> 
-      <h3>MyShop!</h3>
-      <button class="cart-btn" @click="toggleCart">O</button> <!-- botão do carrinho de compras -->
+      <!---<h3>MyShop!</h3>-->
+      <img src="/images/my-shop-logo.png" alt="MyShop!"/>
+      <button class="cart-btn" @click="toggleCart">
+        <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
+          shopping_cart
+        </span>
+        <div v-if="totalQuantity > 0" class="cart-badge">
+          {{ totalQuantity }}
+        </div>
+      </button> 
     </nav>
     </div>
     <div class="container-catalog">
@@ -43,15 +51,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'; //ref = ao usestate em react
+import { ref, onMounted, computed } from 'vue'; //ref = ao usestate em react
 import ProductCard from '@/components/ProductCard.vue';
 import CartDrawer from '@/components/CartDrawer.vue';
 import { getProducts, type Product } from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
+import { useCart } from '@/composables/useCart';
 
+const { cartItems } = useCart();
 const isCartOpen = ref(false); // estado para controlar a visibilidade do carrinho(começa em false)
 const products = ref<Product[]>([]); //array de produtos no api, tipado como Product
 const loading = ref(true); //carregando produtos, enquanto eles não foram exibidos
 const error = ref<string | null>(null); //erro ao carregar produtos
+
+const totalQuantity = computed(() => {
+    // Se cartItems for um array de produtos/itens, você precisa somar as quantidades
+    // Assumindo que cada item no cartItems tem uma propriedade 'quantity'
+    return cartItems.value.reduce((sum, item) => sum + item.quantity, 0);
+});
 
 const toggleCart = () => {
   // alterna o estado atual do carrinho entre aberto e fechado
@@ -61,6 +77,7 @@ const toggleCart = () => {
 const closeCart = () => {
   isCartOpen.value = false; //fecha o carrinho caso clique no overlay, no caso fora do carrinho
 };
+
 const fetchProducts = async () => { // função assíncrona (espera api retornar) para buscar produtos da API
   try{
     loading.value = true; //exibe carregando enquanto busca produtos
@@ -112,6 +129,12 @@ onMounted(() => {
   background-color: white;
   border-radius: 20px;
 }
+
+.navbar img{
+  width:115px;
+  height:110px;
+}
+
 /* botão de carrinho de compras */
 .cart-btn{
   height: 40px;
@@ -121,11 +144,34 @@ onMounted(() => {
   border-radius: 50%;
   cursor: pointer;
   background-color:#FFF;
-  transition: background-color 0.3s ease;
+  display:flex;  
+  justify-content: center;
+  align-items:center;
+  position: relative;  
 }
-/* hover do botão de carrinho */
-.cart-btn:hover {
-  background-color: #d61e1eff;
+
+/* icone do botão de carrinho */
+.cart-btn span{
+    color: #221E6B;
+    font-size: 27.5px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    background-color: #36CA6A;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    border-radius: 50%;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    padding: 1px;
 }
 
 .container-catalog{
@@ -139,12 +185,18 @@ onMounted(() => {
   /*border: 1px solid black;*/
 }
 
+.container-catalog h2{
+  font-weight: 700;
+  color: #221E6B;
+  font-size: 38px;
+}
+
 .products-catalog  {
   width: 100%;   
   height: 400px;
   align-items: center;
   display: flex;
-  gap: 20px;
+  gap: 23px;
   padding: 10px 20px;
   /*border: 1px solid black;*/ 
   justify-content: center;
