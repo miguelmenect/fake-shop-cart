@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  # Nome do seu serviço (pode ser qualquer coisa, ex: frontend)
+  frontend:
+    # Indica que o Docker deve construir a imagem usando o Dockerfile no diretório atual
+    build: .
+    # Mapeia a porta 80 do container para a porta 8080 na sua máquina local
+    ports:
+      - "8080:80"
+    # Reinicia o container se ele falhar
+    restart: always

@@ -26,6 +26,7 @@
         <!--:product= é nome da prop que está sendo passada para o componente ProductCard-->   
       </div>
     </div>
+    <Transition name="cart-slide">
     <!--se o isCartOpen for vedadeiro ele exibe o container de overlay e o componente de carrinho-->
     <!--se o container de overlay for clicado ele deixa o isCartOpen como false, fechando overlay e carrinho-->
     <div v-if="isCartOpen" class="cart-overlay" @click="closeCart"> 
@@ -36,6 +37,7 @@
        /> <!-- aqui estou passando para cartdrawer o evento close de fechar carrinho-->                                                 
      </div>
     </div>
+  </Transition>
   </div>
 
 </template>
@@ -156,4 +158,20 @@ onMounted(() => {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 999;
 }
+
+.cart-slide-enter-active,
+.cart-slide-leave-active {
+    transition: transform 0.4s ease;
+}
+
+.cart-slide-enter-active .cart-drawer,
+.cart-slide-leave-active .cart-drawer {    
+    transition: transform 0.4s ease; 
+}
+
+.cart-slide-enter-from .cart-drawer,
+.cart-slide-leave-to .cart-drawer {    
+    transform: translateX(100%);
+}
+
 </style> 
