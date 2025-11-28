@@ -2,9 +2,18 @@
 <template>
   <div class="home-page">
     <div class="container-nav">
-    <nav class="navbar"> 
-      <!---<h3>MyShop!</h3>-->
-      <img src="/images/my-shop-logo.png" alt="MyShop!"/>
+    <nav class="navbar">       
+     <div class="nav-search"> 
+      <img src="/images/my-shop-logo.png" alt="MyShop"/>
+      <div class="search-container">
+      <input type="text" placeholder="Filtrar produtos..." v-model="searchTerm"/>
+      <button class="filter-btn" @click="handleSearch">
+        <span class="material-symbols-rounded">
+          search
+        </span>
+      </button>
+      </div>
+      </div>
       <button class="cart-btn" @click="toggleCart">
         <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
           shopping_cart
@@ -25,7 +34,7 @@
       <div class="products-catalog">
         <!--componente de card dos produtos sendo renderizado-->  
         <ProductCard 
-         v-for="product in products"
+         v-for="product in filteredProducts"
         :key="product.id" 
         :product="product"        
         />    
@@ -57,6 +66,19 @@ import CartDrawer from '@/components/CartDrawer.vue';
 import { getProducts, type Product } from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
 import { useCart } from '@/composables/useCart';
 
+// 1. Defina o estado para o termo de busca (input)
+const searchTerm = ref(''); 
+
+// 2. Defina o array de todos os produtos (usaremos este para filtrar)
+const allProducts = ref<Product[]>([]); 
+
+// 3. Mapeie as categorias para que a busca funcione por nome da categoria
+const categories = ref([
+    { id: 101, name: "Vestuário" },
+    { id: 102, name: "Alimentação" },
+    { id: 103, name: "Ferramentas" }
+]);
+
 const { cartItems } = useCart();
 const isCartOpen = ref(false); // estado para controlar a visibilidade do carrinho(começa em false)
 const products = ref<Product[]>([]); //array de produtos no api, tipado como Product
@@ -82,7 +104,8 @@ const fetchProducts = async () => { // função assíncrona (espera api retornar
   try{
     loading.value = true; //exibe carregando enquanto busca produtos
     error.value = null; //limpa qualquer erro anterior
-    products.value = await getProducts(); //busca produtos da api, pelo getProducts e guarda no estado products
+    const fetchedProducts = await getProducts(); //busca produtos da api, pelo getProducts e guarda no estado products
+    allProducts.value = fetchedProducts;
   }catch (err){
     error.value = 'Erro ao carregar produtos!!!';
     //console.log("ERRO: ", err);
@@ -94,6 +117,34 @@ const fetchProducts = async () => { // função assíncrona (espera api retornar
 onMounted(() => {
   fetchProducts(); //só executa a função fetchproduts quando o a página(homeview) for carregada, montada
 });
+
+
+const filteredProducts = computed(() => {
+    // Se a busca estiver vazia, retorna todos os produtos
+    if (!searchTerm.value) {
+        return allProducts.value;
+    }
+
+    const lowerCaseSearch = searchTerm.value.toLowerCase().trim();
+
+    return allProducts.value.filter(product => {
+        // Busca por Nome do Produto
+        const nameMatch = product.name.toLowerCase().includes(lowerCaseSearch);
+
+        // Busca por Nome da Categoria
+        const category = categories.value.find(c => c.id === product.category_id);
+        const categoryMatch = category ? category.name.toLowerCase().includes(lowerCaseSearch) : false;
+
+        return nameMatch || categoryMatch;
+    });
+});
+
+const handleSearch = () => {
+    // O filtro já acontece automaticamente quando o termo muda
+    console.log(`Buscando por: ${searchTerm.value}`);
+    // Você pode adicionar um feedback visual aqui, se desejar
+};
+
 </script>
 
 <!--- estilização da pagina home --->
@@ -130,7 +181,46 @@ onMounted(() => {
   border-radius: 20px;
 }
 
-.navbar img{
+.nav-search{  
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center
+}
+
+.search-container{
+  position:relative;
+  display: inline-flex;
+}
+
+.search-container input{
+  height:35px;
+  width: 330px;
+  border-radius:18px;
+  padding: 0px 15px;
+  outline: none;
+  border:1.3px solid #221E6B;
+}
+
+.search-container input::placeholder{
+  font-style: italic;
+}
+
+.filter-btn{
+  display:flex;
+  height:100%;
+  position:absolute;
+  right:2px;
+  align-items:center;  
+  background-color: transparent;
+  border:none;
+  outline:none;
+  cursor:pointer;
+  color: #221E6B;
+  /*transform: scaleX(-1);*/
+}
+
+.nav-search img{  
   width:115px;
   height:110px;
 }
