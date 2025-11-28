@@ -10,17 +10,17 @@
     },
     {
       "id": 2,
-      "name": "Suco Natural de Abacaxi 1L",
+      "name": "Suco de Abacaxi 1L",
       "price": 12.50,
-      "description": "Suco de abacaxi orgânico, pronto para beber.",
+      "description": "Suco de abacaxi natural, pronto para beber.",
       "image": "/images/suco-abacaxi.jpg",
       "category_id": 102
     },
     {
       "id": 3,
-      "name": "Chave Phillips Multifuncional",
+      "name": "Chave Phillips",
       "price": 45.00,
-      "description": "Chave de fenda cruzada (Phillips) com ponta magnetizada.",
+      "description": "Chave de fenda com ponta magnetizada.",
       "image": "/images/chave-phillips.jpg",
       "category_id": 103
     },

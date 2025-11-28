@@ -1,0 +1,12 @@
+/* No seu arquivo CSS global (fora de qualquer componente .vue) */
+
+html,
+body {
+  /* Garante que o corpo e o HTML ocupem 100% da área visível */
+  min-height: 100vh;
+  width: 100%;
+  background-color: #e8ecef;
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}

@@ -4,6 +4,7 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia'; // 1. Importa a função do Pinia
 import App from './App.vue';
 import router from './router'; // 2. Importa a configuração do seu Router
+import './assets/base.css';
 
 // instância o Pinia
 const pinia = createPinia();

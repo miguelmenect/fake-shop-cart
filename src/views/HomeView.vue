@@ -97,7 +97,7 @@ onMounted(() => {
 .container-nav{
   width: 1100px; 
   height: 55px;
-  /*border:1px solid black;*/
+  /*border:1px solid black;*/  
 }
 
 /* navbar */
@@ -108,8 +108,8 @@ onMounted(() => {
   align-items: center;  
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   height: 100%; 
-  width:100%;  
-  background-color:"#FFF";
+  width: 100%;  
+  background-color: white;
   border-radius: 20px;
 }
 /* botão de carrinho de compras */
@@ -142,10 +142,12 @@ onMounted(() => {
 .products-catalog  {
   width: 100%;   
   height: 400px;
-  display: inline-flex;
+  align-items: center;
+  display: flex;
   gap: 20px;
   padding: 10px 20px;
-  border: 1px solid black;
+  /*border: 1px solid black;*/ 
+  justify-content: center;
 }
 
 /*overlay para quando o carrinho estiver aberto*/
