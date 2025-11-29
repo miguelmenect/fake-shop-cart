@@ -6,8 +6,12 @@
      <div class="nav-search"> 
       <img src="/images/my-shop-logo.png" alt="MyShop"/>
       <div class="search-container">
-      <input type="text" placeholder="Filtrar produtos..." v-model="searchTerm"/>
-      <button class="filter-btn" @click="handleSearch">
+      <input 
+        type="text" 
+        placeholder="Filtrar produtos..."
+        v-model="searchTerm"/> <!-- conecta esse input ao searchTerm, ATUALIZA o estado -->
+                               <!--de searchTerm a cada tecla digitada-->                               
+      <button class="filter-btn" @click="filteredProducts">
         <span class="material-symbols-rounded">
           search
         </span>
@@ -66,13 +70,9 @@ import CartDrawer from '@/components/CartDrawer.vue';
 import { getProducts, type Product } from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
 import { useCart } from '@/composables/useCart';
 
-// 1. Defina o estado para o termo de busca (input)
-const searchTerm = ref(''); 
 
-// 2. Defina o array de todos os produtos (usaremos este para filtrar)
-const allProducts = ref<Product[]>([]); 
-
-// 3. Mapeie as categorias para que a busca funcione por nome da categoria
+const searchTerm = ref(''); //variavel reativa muda o estado para o que o usuário esta digitando
+const allProducts = ref<Product[]>([]); //array de produtos. produtos sendo buscados serão armazenados aqui
 const categories = ref([
     { id: 101, name: "Vestuário" },
     { id: 102, name: "Alimentação" },
@@ -104,8 +104,9 @@ const fetchProducts = async () => { // função assíncrona (espera api retornar
   try{
     loading.value = true; //exibe carregando enquanto busca produtos
     error.value = null; //limpa qualquer erro anterior
-    const fetchedProducts = await getProducts(); //busca produtos da api, pelo getProducts e guarda no estado products
-    allProducts.value = fetchedProducts;
+    const fetchedProducts = await getProducts(); //aguarda a chagada dos itens na chamada da 
+                                                //função getProducts(await) e os armazena em fetchedProducts
+    allProducts.value = fetchedProducts; //allProducts recebe fetchedProducts   
   }catch (err){
     error.value = 'Erro ao carregar produtos!!!';
     //console.log("ERRO: ", err);
@@ -114,36 +115,35 @@ const fetchProducts = async () => { // função assíncrona (espera api retornar
   }
 };
 
-onMounted(() => {
-  fetchProducts(); //só executa a função fetchproduts quando o a página(homeview) for carregada, montada
-});
-
-
-const filteredProducts = computed(() => {
-    // Se a busca estiver vazia, retorna todos os produtos
-    if (!searchTerm.value) {
-        return allProducts.value;
+const filteredProducts = computed(() => {//função é chamada toda vez que searchTerm atualiza/muda seu estado
+    
+    if (!searchTerm.value) {// se busca/input estiver vazio exibe todos os produtos no catalogo
+        return allProducts.value;//retornando lista de produtos completa
     }
-
+    //variavel que captura valor de pesquisa, para não fazer diferença de minuscula e espaços desneceassrios no input
     const lowerCaseSearch = searchTerm.value.toLowerCase().trim();
 
     return allProducts.value.filter(product => {
-        // Busca por Nome do Produto
+        //busca o produto com aquele nome especifico(NOME), se for retorna true
         const nameMatch = product.name.toLowerCase().includes(lowerCaseSearch);
 
-        // Busca por Nome da Categoria
+        //tenta encontrar o objeto de categoria completo (ex: { id: 101, name: "Vestuário" }) 
+        //dentro do array 'categories' usando o 'category_id' do produto atual.
+       //caso encontrado, 'category' armazena o objeto; se não, armazena 'undefined'
         const category = categories.value.find(c => c.id === product.category_id);
+
+        //verifica se o produto encontrado por categoria atraves por id tem o name digitado no input
         const categoryMatch = category ? category.name.toLowerCase().includes(lowerCaseSearch) : false;
 
+        //retorna o produto que a busca "casar"/tiver dado true, com nome ou categoria escrito no input
+        //se for true ele incluido na nova lista filteredProducts
         return nameMatch || categoryMatch;
     });
 });
 
-const handleSearch = () => {
-    // O filtro já acontece automaticamente quando o termo muda
-    console.log(`Buscando por: ${searchTerm.value}`);
-    // Você pode adicionar um feedback visual aqui, se desejar
-};
+onMounted(() => {
+  fetchProducts(); //só executa a função fetchproduts quando o a página(homeview) for carregada, montada
+});
 
 </script>
 
