@@ -35,9 +35,9 @@
         <p>Carregando produtos...</p>
       </div>
 
-      <div class="products-catalog">
+      <div class="products-catalog" v-if="!loading && filteredProducts.length > 0">
         <!--componente de card dos produtos sendo renderizado-->  
-        <ProductCard 
+        <ProductCard          
          v-for="product in filteredProducts"
         :key="product.id" 
         :product="product"        
@@ -46,6 +46,10 @@
         <!--:key identifica unicamente cada card pelo id do produto-->
         <!--:product= é nome da prop que está sendo passada para o componente ProductCard-->   
       </div>
+      <div class="no-products-message" v-else-if="!loading && filteredProducts.length === 0">
+        <p>Nenhum produto encontrado :(</p>
+        <p class="suggestion">Tente refinar sua busca por nome ou categoria.</p>
+    </div>
     </div>
     <Transition name="cart-slide">
     <!--se o isCartOpen for vedadeiro ele exibe o container de overlay e o componente de carrinho-->
@@ -318,4 +322,29 @@ onMounted(() => {
     transform: translateX(100%);
 }
 
+.no-products-message {
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #221E6B;
+}
+
+.no-products-message p {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.no-products-message .suggestion {
+    font-size: 16px;
+    font-weight: 400;
+    color: #5a5a5a;
+    font-style:italic;
+}
 </style> 
