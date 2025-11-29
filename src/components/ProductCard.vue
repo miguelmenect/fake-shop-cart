@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <div class="product-image">
-      <div class="category-label">sdsdsdsd</div>    
+      <div class="category-label"></div>    
       <img :src="product.image" :alt="product.name" />
     </div>
     <div class="product-details">
@@ -23,6 +23,7 @@ import { useCart } from '@/composables/useCart'; // importa o composable useCart
 
 interface Props {
   product: Product;
+  
 }
 
 const props = defineProps<Props>();

@@ -46,7 +46,7 @@
         <!--:key identifica unicamente cada card pelo id do produto-->
         <!--:product= é nome da prop que está sendo passada para o componente ProductCard-->   
       </div>
-      <div class="no-products-message" v-else-if="!loading && filteredProducts.length === 0">
+      <div class="no-products-message" v-else>
         <p>Nenhum produto encontrado :(</p>
         <p class="suggestion">Tente refinar sua busca por nome ou categoria.</p>
     </div>

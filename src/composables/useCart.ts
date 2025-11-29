@@ -41,6 +41,18 @@ export function useCart() {
     cartItems.value = cartItems.value.filter(item => item.id !== productId);
   };
 
+  const decreaseItem = (product: Product) => {
+    const existItem = cartItems.value.find(item => item.id === product.id);
+
+    if (existItem) {
+      if (existItem.quantity > 1) {
+        existItem.quantity--;
+      } else {
+        removeFromCart(existItem.id);
+      }
+    }
+  }
+
   // calcula valor total de produtos no carrinho
   const cartTotal = () => {
     return cartItems.value.reduce((total, item) => {
@@ -52,6 +64,7 @@ export function useCart() {
   return {
     cartItems,
     addToCart,
+    decreaseItem,
     removeFromCart,
     cartTotal
   };
