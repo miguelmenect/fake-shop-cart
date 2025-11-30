@@ -12,27 +12,18 @@ export interface CartItem extends Product {
 const cartItems = ref<CartItem[]>([]);
 
 export function useCart() {
-  const addToCart = (product: Product) => {// adiciona produto no carrinho através do botão "Adicionar ao carrinho"
-    //abaixo verifica se o produto adicionado já esta no carrinho
+  const addToCart = (product: Product) => {
+    // verifica se o produto que esta a ser adicionado já existe no carrinho
     const existingItem = cartItems.value.find(item => item.id === product.id);
 
-    //verifica se ja existe produto da mesma categoria no carrinho, verificando pelo o id da categoria
-    const categoryExists = cartItems.value.find(item => item.category_id === product.category_id);
-
-    //caso o ID JÁ exista e NÃO seja o mesmo produto, ele exibe um alert na tela e não coloca no carrinho
-    //não permitindo colocar mais de um produto da mesma categoria no carrinho
-    if (categoryExists && !existingItem) {
-      alert("Você não pode adicionar mais de um produto da mesma categoria no carrinho");
-    } else { //caso não, ele entra nesse else com mais condicionais
-      if (existingItem) {         //caso o produto já esteja no carrinho ele 
-        existingItem.quantity++; //aumenta/soma +1 na quantidade      
-      } else {
-        // se não existe, cai nesse else que adiciona o produto com quantidade 1
-        cartItems.value.push({
-          ...product, //pega todas as propriedades do produto
-          quantity: 1 //adciona quantidade em 1
-        });
-      }
+    if (existingItem) {//se o produto ja existe no carrinho, ele apenas adiciona em +1 sua quantidade      
+      existingItem.quantity++; //somando sempre em +1 sua quantidade
+    } else {
+      //caso não exista ele cai nesse else, que ele adiciona o produto no carrinho com quantidade igual a 1 
+      cartItems.value.push({
+        ...product,
+        quantity: 1 //adicionado com a quantidade igual a 1
+      });
     }
   };
 
@@ -43,11 +34,12 @@ export function useCart() {
 
   //subtrair produto do carrinho
   const decreaseItem = (product: Product) => {
+    //verifica se existe o item no carrinho
     const existItem = cartItems.value.find(item => item.id === product.id);
 
     if (existItem) {
       if (existItem.quantity > 1) { //se tiver no minimo um o produto se mantem no carrinho
-        existItem.quantity--;
+        existItem.quantity--;    //ele subtrair o produto em 1 até que chegue a 1, menos que 1(0) cai no else
       } else { //se tiver menos que um, no caso 0 cai nesse else que o remove completamente do carrinho
         removeFromCart(existItem.id);
       }

@@ -170,7 +170,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
+  gap: 20px;
 }
 /* container da navbar */
 .container-nav{

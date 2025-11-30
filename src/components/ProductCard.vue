@@ -21,6 +21,7 @@
 import type { Product, Category } from '@/services/api';
 import { computed } from 'vue';
 import { useCart } from '@/composables/useCart'; // importa o composable useCart
+import { useToast } from '@/composables/useToast';
 
 interface Props {
   product: Product;
@@ -28,7 +29,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { addToCart } = useCart(); // aqui estamos pegando a função addToCart do composable useCart para usar
+const { addToCart, cartItems} = useCart(); // aqui estamos pegando a função addToCart do composable useCart para usar
+const { showSuccess, showWarning } = useToast();
 
 const formatPrice = (price: number): string => {
   return price.toFixed(2).replace('.', ',');
@@ -43,8 +45,23 @@ const categoryName = computed(() => {
 
 // funçao que adiciona o produto ao carrinho
 const handleAddToCart = () => {
-  addToCart(props.product); //adiciona o produto ao carrinho, produtos são os que
-  };                       //foram passados como props através do v-for em HomeView
+  // verifica se já existe um produto da mesma categoria MAS com ID 
+  // diferente(impedindo de adicionar produto de categoria diferente, mas permitindo adicionar o 
+  // mesmo produto repetidas vezes)
+  const hasSameCategory = cartItems.value.some(
+    item => item.category_id === props.product.category_id && item.id !== props.product.id
+  );
+
+  if (hasSameCategory) {
+    // se ja existe produto da mesma categoria, mostra o toast de warning
+    showWarning("Você não pode adicionar mais de um produto da mesma categoria no carrinho");
+    return; // não adiciona o produto, retornando NADA
+  }else{
+    addToCart(props.product); //adiciona o produto ao carrinho, produtos esses são os que
+                            //foram passados como props através do v-for em HomeView
+    showSuccess(`${props.product.name} adicionado ao carrinho!`);
+  }
+};
 </script>
 
 <style scoped>
