@@ -13,8 +13,18 @@ export interface Product {
   category_id: number;
 }
 
-export const getProducts = async (): Promise<Product[]> => {
-  const response = await api.get<Product[]>('/products');
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export const getProducts = async (): Promise<Product[]> => { //função que retorna valor de api produtcts
+  const response = await api.get<Product[]>('/products'); //link de api com final do link /prodcuts
+  return response.data;
+};
+
+export const getCategories = async (): Promise<Category[]> => {
+  const response = await api.get<Category[]>("/categories");
   return response.data;
 };
 

@@ -71,19 +71,15 @@
 import { ref, onMounted, computed } from 'vue'; //ref = ao usestate em react
 import ProductCard from '@/components/ProductCard.vue';
 import CartDrawer from '@/components/CartDrawer.vue';
-import { getProducts, type Product } from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
+import { getProducts, type Product, getCategories, type Category} from '@/services/api'; // importa a função getProducts e a tipagem Product do api.ts
 import { useCart } from '@/composables/useCart';
 
-
+const { cartItems } = useCart();
 const searchTerm = ref(''); //variavel reativa muda o estado para o que o usuário esta digitando
 const allProducts = ref<Product[]>([]); //array de produtos. produtos sendo buscados serão armazenados aqui
-const categories = ref([
-    { id: 101, name: "Vestuário" },
-    { id: 102, name: "Alimentação" },
-    { id: 103, name: "Ferramentas" }
-]);
 
-const { cartItems } = useCart();
+const categories = ref<Category[]>([]); //array com valor das categorias, vindo de getCategories
+
 const isCartOpen = ref(false); // estado para controlar a visibilidade do carrinho(começa em false)
 const products = ref<Product[]>([]); //array de produtos no api, tipado como Product
 const loading = ref(true); //carregando produtos, enquanto eles não foram exibidos
