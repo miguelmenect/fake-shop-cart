@@ -2,8 +2,7 @@
   <div class="cart-drawer"> 
     <!-- header do carrinho com título e botão de fechar --> 
     <div class="cart-header"> 
-      <div>   
-      <!--<img src="" alt="carrinho de compras">-->
+      <div>         
         <h2>Carrinho de Compras</h2>   
       </div> 
        <button class="close-btn" @click="handleClose">✕</button>

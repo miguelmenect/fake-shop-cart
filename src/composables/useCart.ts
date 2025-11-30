@@ -41,13 +41,14 @@ export function useCart() {
     cartItems.value = cartItems.value.filter(item => item.id !== productId);
   };
 
+  //subtrair produto do carrinho
   const decreaseItem = (product: Product) => {
     const existItem = cartItems.value.find(item => item.id === product.id);
 
     if (existItem) {
-      if (existItem.quantity > 1) {
+      if (existItem.quantity > 1) { //se tiver no minimo um o produto se mantem no carrinho
         existItem.quantity--;
-      } else {
+      } else { //se tiver menos que um, no caso 0 cai nesse else que o remove completamente do carrinho
         removeFromCart(existItem.id);
       }
     }

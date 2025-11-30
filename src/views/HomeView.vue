@@ -22,27 +22,28 @@
         <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
           shopping_cart
         </span>
-        <div v-if="totalQuantity > 0" class="cart-badge">
-          {{ totalQuantity }}
+        <div v-if="totalQuantity > 0" class="cart-badge"> <!--exibe o badge somente se-->
+          {{ totalQuantity }}                             <!--produtos adiconados > 1-->
         </div>
       </button> 
     </nav>
     </div>
     <div class="container-catalog">
       <h2>NOSSOS PRODUTOS</h2>
-
       <div v-if="loading">
         <p>Carregando produtos...</p>
       </div>
 
       <div class="products-catalog" v-if="!loading && filteredProducts.length > 0">
-        <!--componente de card dos produtos sendo renderizado-->  
+        <!--componente de card dos produtos sendo renderizado-->
+        <!--passando aqui valor de product e categories quais são capturados nessa-->
+        <!-- página e passando como props para Productcard-->  
         <ProductCard          
          v-for="product in filteredProducts"
         :key="product.id" 
-        :product="product"        
-        />    
-        <!--:v-for um laço de repetição que percorre o array products -->
+        :product="product"
+        :category="categories"        
+        /><!--:v-for um laço de repetição que percorre o array products -->
         <!--:key identifica unicamente cada card pelo id do produto-->
         <!--:product= é nome da prop que está sendo passada para o componente ProductCard-->   
       </div>
@@ -115,6 +116,15 @@ const fetchProducts = async () => { // função assíncrona (espera api retornar
   }
 };
 
+const fetchCategories = async () => {
+  try {
+    const fetchedCategories = await getCategories(); //aguarda a captura de dados ser feita na chamada getCategories
+    categories.value = fetchedCategories; //categories recebe valor de fetchedCategories
+  } catch (err) { //caso de erro
+    //console.error('Erro ao carregar categorias:', err);
+  }
+};
+
 const filteredProducts = computed(() => {//função é chamada toda vez que searchTerm atualiza/muda seu estado
     
     if (!searchTerm.value) {// se busca/input estiver vazio exibe todos os produtos no catalogo
@@ -142,7 +152,8 @@ const filteredProducts = computed(() => {//função é chamada toda vez que sear
 });
 
 onMounted(() => {
-  fetchProducts(); //só executa a função fetchproduts quando o a página(homeview) for carregada, montada
+  fetchProducts(); //só executa a função fetchproduts e fetchCategories quando 
+  fetchCategories(); // o a página(homeview) for carregada, montada
 });
 
 </script>
@@ -159,7 +170,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 25px;
 }
 /* container da navbar */
 .container-nav{
@@ -270,8 +281,7 @@ onMounted(() => {
   display: flex;
   padding: 0px 10px;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: center;  
   /*border: 1px solid black;*/
 }
 

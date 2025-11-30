@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <div class="product-image">
-      <div class="category-label"></div>    
+      <div class="category-label">{{categoryName}}</div>    
       <img :src="product.image" :alt="product.name" />
     </div>
     <div class="product-details">
@@ -18,12 +18,13 @@
 </template>
 
 <script setup lang="ts">
-import type { Product } from '@/services/api';
+import type { Product, Category } from '@/services/api';
+import { computed } from 'vue';
 import { useCart } from '@/composables/useCart'; // importa o composable useCart
 
 interface Props {
   product: Product;
-  
+  category: Category[]; //category tipado como Category[]
 }
 
 const props = defineProps<Props>();
@@ -32,6 +33,13 @@ const { addToCart } = useCart(); // aqui estamos pegando a função addToCart do
 const formatPrice = (price: number): string => {
   return price.toFixed(2).replace('.', ',');
 };
+
+const categoryName = computed(() => {
+  //busca para encontrar dentro de category(Category[]) o valor de categoria correspondente ao id de categoria
+  const category = props.category.find(c => c.id === props.product.category_id);
+  //se category tiver algum valor retorna o category.name, se não o texto "sem categoria"
+  return category ? category.name : 'Sem categoria'; 
+});
 
 // funçao que adiciona o produto ao carrinho
 const handleAddToCart = () => {
@@ -76,7 +84,6 @@ const handleAddToCart = () => {
   display:flex;
   margin-top:7px;
   margin-left:5px;
-  width:70px;
   height:20px;
   position:absolute;
   background-color: white;
@@ -84,7 +91,9 @@ const handleAddToCart = () => {
   justify-content:center;
   align-items:center;
   font-size:12px;
+  font-weight:600;
   color:#221E6B;
+  padding: 0px 7px;
 }
 
 .product-details {
