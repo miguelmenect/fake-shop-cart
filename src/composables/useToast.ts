@@ -25,7 +25,7 @@ export function useToast() {
       return; //se um mesmo toast já esta sendo exibido ele retorna nada
     }
 
-    if (toasts.value.length > 2) {
+    if (toasts.value.length >= 2) {
       const oldestToast = toasts.value[0]; //toast antigo, primeiro indice igual a 0, o primeiro
       removeToast(oldestToast.id); //remove o primeiro toast(indice 0) para adicionar o próximo
     }
