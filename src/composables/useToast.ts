@@ -3,7 +3,7 @@ import { ref } from 'vue';
 export interface Toast {
   id: number;
   message: string;
-  type: 'success' | 'error' | 'info' | 'warning';
+  type: 'success' | 'warning';
   duration?: number;
 }
 
@@ -16,7 +16,21 @@ export function useToast() {
     type: Toast['type'] = 'success',
     duration: number = 3000
   ) => {
-    const id = ++toastIdCounter;
+    //verifica se aquele MESMO toast, com MESMA mensagem já não foi chamado
+    const duplicateToast = toasts.value.find(
+      toast => toast.message === message && toast.type === type
+    );
+
+    if (duplicateToast) {
+      return; //se um mesmo toast já esta sendo exibido ele retorna nada
+    }
+
+    if (toasts.value.length > 2) {
+      const oldestToast = toasts.value[0]; //toast antigo, primeiro indice igual a 0, o primeiro
+      removeToast(oldestToast.id); //remove o primeiro toast(indice 0) para adicionar o próximo
+    }
+
+    const id = ++toastIdCounter; //adiciona toast na tela
 
     toasts.value.push({
       id,
@@ -25,7 +39,7 @@ export function useToast() {
       duration
     });
 
-    // Remove o toast automaticamente após a duração
+    // remove o toast automaticamente após a duração de 3seg
     setTimeout(() => {
       removeToast(id);
     }, duration);
@@ -42,14 +56,6 @@ export function useToast() {
     addToast(message, 'success', duration);
   };
 
-  const showError = (message: string, duration?: number) => {
-    addToast(message, 'error', duration);
-  };
-
-  const showInfo = (message: string, duration?: number) => {
-    addToast(message, 'info', duration);
-  };
-
   const showWarning = (message: string, duration?: number) => {
     addToast(message, 'warning', duration);
   };
@@ -59,8 +65,6 @@ export function useToast() {
     addToast,
     removeToast,
     showSuccess,
-    showError,
-    showInfo,
     showWarning
   };
 }

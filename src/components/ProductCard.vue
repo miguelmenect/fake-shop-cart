@@ -52,10 +52,16 @@ const handleAddToCart = () => {
     item => item.category_id === props.product.category_id && item.id !== props.product.id
   );
 
+  //verifica a quantidade que aquele mesmo produto tem no carrinho
+  const itemInCart = cartItems.value.find(item => item.id === props.product.id);
+
   if (hasSameCategory) {
     // se ja existe produto da mesma categoria, mostra o toast de warning
     showWarning("Você não pode adicionar mais de um produto da mesma categoria no carrinho...");
     return; // não adiciona o produto, retornando NADA
+  }else if(itemInCart && itemInCart.quantity >= 10){
+    //não permite adicionar mais de 10 do mesmo produto
+    showWarning(`Limite máximo de 10 unidades de ${props.product.name} atingido!`);
   }else{
     addToCart(props.product); //adiciona o produto ao carrinho, produtos esses são os que
                             //foram passados como props através do v-for em HomeView

@@ -16,8 +16,10 @@ export function useCart() {
     // verifica se o produto que esta a ser adicionado já existe no carrinho
     const existingItem = cartItems.value.find(item => item.id === product.id);
 
-    if (existingItem) {//se o produto ja existe no carrinho, ele apenas adiciona em +1 sua quantidade      
-      existingItem.quantity++; //somando sempre em +1 sua quantidade
+    if (existingItem) {//se o produto ja existe no carrinho, ele apenas adiciona em +1 sua quantidade 
+      if (existingItem.quantity < 10) {
+        existingItem.quantity++; //somando sempre em +1 sua quantidade
+      }
     } else {
       //caso não exista ele cai nesse else, que ele adiciona o produto no carrinho com quantidade igual a 1 
       cartItems.value.push({

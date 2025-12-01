@@ -23,8 +23,11 @@
         <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
           shopping_cart
         </span>
-        <div v-if="totalQuantity > 0" class="cart-badge"> <!--exibe o badge somente se-->
-          {{ totalQuantity }}                             <!--produtos adiconados > 1-->
+        <div v-if="totalQuantity > 0 && totalQuantity <= 10" class="cart-badge"> <!--exibe o badge somente se-->
+          {{ totalQuantity }}                                     <!--produtos adiconados > 1-->
+        </div>
+        <div v-else-if="totalQuantity > 10" class="cart-badge"> 
+          +10  <!--exibe + 10 no bage do carrinho caso os produtos passem de 10 itens adicionados-->                           
         </div>
       </button> 
       <!--menu burguer-->
@@ -47,7 +50,7 @@
                 maxlength="30"
                 v-model="searchTerm"
                 @keyup.enter="handleMobileSearch"/>
-              <button class="filter-btn" @click="filteredProducts">
+              <button class="filter-btn" @click="handleMobileSearch">
                 <span class="material-symbols-rounded">
                   search
                 </span>
@@ -59,8 +62,11 @@
               shopping_cart
             </span>
             <span class="cart-text">Carrinho de compras</span>
-            <div v-if="totalQuantity > 0" class="cart-badge">
+            <div v-if="totalQuantity > 0 && totalQuantity <= 10" class="cart-badge">
               {{ totalQuantity }}
+            </div>
+            <div v-else-if="totalQuantity > 10" class="cart-badge"> 
+              +10                           
             </div>
           </button>
         </div>
@@ -188,7 +194,7 @@ const filteredProducts = computed(() => {//função é chamada toda vez que sear
         return allProducts.value;//retornando lista de produtos completa
     }
     //variavel que captura valor de pesquisa, para não fazer diferença de minuscula e espaços desneceassrios no input
-    const lowerCaseSearch = searchTerm.value.toLowerCase().trim();
+    const lowerCaseSearch = searchTerm.value.toLowerCase().trim();    
 
     return allProducts.value.filter(product => {
         //busca o produto com aquele nome especifico(NOME), se for retorna true
@@ -205,7 +211,7 @@ const filteredProducts = computed(() => {//função é chamada toda vez que sear
         //retorna o produto que a busca "casar"/tiver dado true, com nome ou categoria escrito no input
         //se for true ele incluido na nova lista filteredProducts
         return nameMatch || categoryMatch;
-    });
+    });    
 });
 
 onMounted(() => {
@@ -231,9 +237,12 @@ onMounted(() => {
 }
 /* container da navbar */
 .container-nav{
+  position:fixed;
   width: 100%;
   max-width: 1100px;
-  height: 55px;
+  padding:0px 15px;
+  height: 55px; 
+  z-index: 999;
   /*border:1px solid black;*/  
 }
 
@@ -328,13 +337,13 @@ onMounted(() => {
     font-size: 10px;
     font-weight: bold;
     border-radius: 50%;
-    min-width: 18px;
-    height: 18px;
+    min-width: 15px;
+    min-height: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10;
-    padding: 1px;
+    padding: 3px 2.5px;
 }
 
 .menu-burguer{
@@ -465,6 +474,7 @@ onMounted(() => {
   height: auto;
   display: flex;
   padding: 0px 10px;
+  margin-top:65px;
   flex-direction: column;
   align-items: center;  
   /*border: 1px solid black;*/
