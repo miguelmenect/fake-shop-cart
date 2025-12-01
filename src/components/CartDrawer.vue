@@ -307,7 +307,7 @@ const handleClose = () => { //função de fato que chama o evento de fechar o ca
   height: 100%;
   border: none;
   border-radius: 15px;
-  background-color: #28a745;
+  background-color: #36CA6A;
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -316,6 +316,6 @@ const handleClose = () => { //função de fato que chama o evento de fechar o ca
 }
 
 .checkout-div button:hover {
-  background-color: #218838;
+  background-color: #27b458ff;
 }
 </style>
