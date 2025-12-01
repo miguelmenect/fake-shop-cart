@@ -5,10 +5,11 @@
     <nav class="navbar">       
      <div class="nav-search"> 
       <img src="/images/my-shop-logo.png" alt="MyShop"/>
-      <div class="search-container">
+      <div class="search-container desktop-search">
       <input 
         type="text" 
         placeholder="Filtrar produtos..."
+        maxlength="30"
         v-model="searchTerm"/> <!-- conecta esse input ao searchTerm, ATUALIZA o estado -->
                                <!--de searchTerm a cada tecla digitada-->                               
       <button class="filter-btn" @click="filteredProducts">
@@ -18,7 +19,7 @@
       </button>
       </div>
       </div>
-      <button class="cart-btn" @click="toggleCart">
+      <button class="cart-btn desktop-cart" @click="toggleCart">
         <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
           shopping_cart
         </span>
@@ -26,8 +27,46 @@
           {{ totalQuantity }}                             <!--produtos adiconados > 1-->
         </div>
       </button> 
+      <!--menu burguer-->
+      <button class="menu-burguer" @click="toggleMenu">
+        <span class="material-symbols-rounded">
+          menu
+        </span>
+      </button>
     </nav>
     </div>
+    <!--container de lista de menu-->
+    <Transition name="menu-slide">
+      <div v-if="isMenuOpen" class="mobile-menu-overlay" @click="closeMenu">
+        <div class="mobile-menu" @click.stop> <!--click.stop, para ele não fechar o menu quando clicar no input-->
+          <div class="menu-item search-item">
+            <div class="search-container mobile-search">
+              <input 
+                type="text" 
+                placeholder="Filtrar produtos..."
+                maxlength="30"
+                v-model="searchTerm"
+                @keyup.enter="handleMobileSearch"/>
+              <button class="filter-btn" @click="filteredProducts">
+                <span class="material-symbols-rounded">
+                  search
+                </span>
+              </button>
+            </div>
+          </div>
+          <button class="menu-item cart-item" @click="toggleCart">
+            <span class="material-symbols-rounded"><!-- botão do carrinho de compras -->
+              shopping_cart
+            </span>
+            <span class="cart-text">Carrinho de compras</span>
+            <div v-if="totalQuantity > 0" class="cart-badge">
+              {{ totalQuantity }}
+            </div>
+          </button>
+        </div>
+      </div>
+    </Transition>
+
     <div class="container-catalog">
       <h2>NOSSOS PRODUTOS</h2>
       <div v-if="loading">
@@ -86,20 +125,38 @@ const products = ref<Product[]>([]); //array de produtos no api, tipado como Pro
 const loading = ref(true); //carregando produtos, enquanto eles não foram exibidos
 const error = ref<string | null>(null); //erro ao carregar produtos
 
+const isMenuOpen = ref(false); //variavel de estado do menu quando for telas menores
+
 const totalQuantity = computed(() => {
     // Se cartItems for um array de produtos/itens, você precisa somar as quantidades
     // Assumindo que cada item no cartItems tem uma propriedade 'quantity'
     return cartItems.value.reduce((sum, item) => sum + item.quantity, 0);
 });
 
-const toggleCart = () => {
-  // alterna o estado atual do carrinho entre aberto e fechado
-  isCartOpen.value = !isCartOpen.value;
+const closeMenu = () => {
+  isMenuOpen.value = false; //torna isMneuOpen como false, o fechando
 };
 
 const closeCart = () => {
   isCartOpen.value = false; //fecha o carrinho caso clique no overlay, no caso fora do carrinho
 };
+
+const toggleMenu = () =>{
+  isMenuOpen.value = !isMenuOpen.value; //menu fica com seu valor diferente do atual sempre que chamado
+}
+
+const toggleCart = () => {
+  // alterna o estado atual do carrinho entre aberto e fechado
+  isCartOpen.value = !isCartOpen.value;
+  if(isMenuOpen){
+    closeMenu();
+  }
+};
+
+const handleMobileSearch = () =>{
+  filteredProducts.value;
+  closeMenu();
+}
 
 const fetchProducts = async () => { // função assíncrona (espera api retornar) para buscar produtos da API
   try{
@@ -174,7 +231,8 @@ onMounted(() => {
 }
 /* container da navbar */
 .container-nav{
-  width: 1100px; 
+  width: 100%;
+  max-width: 1100px;
   height: 55px;
   /*border:1px solid black;*/  
 }
@@ -192,21 +250,25 @@ onMounted(() => {
   border-radius: 20px;
 }
 
-.nav-search{  
+.nav-search{ 
   display:flex;
-  justify-content:space-between;
-  gap:10px;
-  align-items:center
+  width:100%;
+  max-width:457px;  
+  gap: 10px;
+  align-items:center;
+  
 }
 
 .search-container{
   position:relative;
   display: inline-flex;
+  width: 100%;
 }
 
 .search-container input{
   height:35px;
-  width: 330px;
+  width: 100%;
+  max-width:330px;
   border-radius:18px;
   padding: 0px 15px;
   outline: none;
@@ -275,6 +337,129 @@ onMounted(() => {
     padding: 1px;
 }
 
+.menu-burguer{
+  display:none;
+  height:40px;
+  width:40px;
+  border:none;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: white;
+  justify-content:center;
+  align-items: center;
+  flex-shrink: 0;
+  color:#221E6B;
+}
+
+.menu-burguer span{
+  font-size: 28px;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;  
+  z-index: 998;
+}
+
+.mobile-menu {  
+  display: flex;
+  flex-direction: column;
+  position: absolute;  
+  top: 90px;        
+  right: 15px;      
+  border-radius: 15px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  height: fit-content;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  background-color: white;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.menu-item {
+  display:flex;
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s;
+}
+
+.menu-item.search-item {
+  padding: 10px;
+}
+
+.menu-item.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  font-size: 16px;
+  font-weight: 500;
+  color: #221E6B;
+}
+
+.menu-item.cart-item:hover {
+  background-color: #e9ecef;
+}
+
+.menu-item.cart-item span.material-symbols-rounded {
+  font-size: 24px;
+  color: #221E6B;
+}
+
+.cart-text {
+  flex: 1;
+  text-align: left;
+}
+
+.menu-item.cart-item .cart-badge {
+  position: static;
+  margin-left: auto;
+}
+
+/*caso da tela for menor que 572px, o input de filtro na navbar some */
+@media (max-width: 571px) {
+.desktop-search{
+  display: none !important;
+}
+}
+
+.mobile-search {
+ width: 100%;
+}
+
+/* Transição do menu mobile */
+.menu-slide-enter-active,
+.menu-slide-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.menu-slide-enter-active .mobile-menu,
+.menu-slide-leave-active .mobile-menu {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.menu-slide-enter-from,
+.menu-slide-leave-to {
+  opacity: 0;
+}
+
+.menu-slide-enter-from .mobile-menu,
+.menu-slide-leave-to .mobile-menu {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
 .container-catalog{
   width: 100%;
   height: auto;
@@ -288,25 +473,25 @@ onMounted(() => {
 .container-catalog h2{
   font-weight: 700;
   color: #221E6B;
-  font-size: 38px;
+  font-size: clamp(24px, 5vw, 38px); /*muda tamanho da fonte quando diminuir tamanho de tela */
 }
 
 .products-catalog  {
-  width: 100%;   
-  height: 400px;
-  align-items: center;
-  display: flex;
+  width: 100%;
+  max-width:1100px;   
+  min-height: 400px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 23px;
-  padding: 10px 20px;
-  /*border: 1px solid black;*/ 
-  justify-content: center;
+  padding: 10px;
+  justify-items: center;
 }
 
 /*overlay para quando o carrinho estiver aberto*/
 .cart-overlay{
   position: fixed;
   width: 100vw;
-  height: 100vw;
+  height: 100vh;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.5);
@@ -342,15 +527,53 @@ onMounted(() => {
 }
 
 .no-products-message p {
-    font-size: 28px;
+    font-size: clamp(20px, 4vw, 28px);
     font-weight: 700;
     margin: 0;
 }
 
 .no-products-message .suggestion {
-    font-size: 16px;
+   font-size: clamp(14px, 2vw, 16px);
     font-weight: 400;
     color: #5a5a5a;
     font-style:italic;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+  display: flex;
+  justify-content: center;
+  padding-top: 100px;
+}
+
+.desktop-search,
+.desktop-cart {
+  display: flex;
+}
+
+@media (max-width: 571px) {
+  .desktop-search,
+  .desktop-cart {
+    display: none !important;
+  }
+
+  .menu-burguer {
+    display: flex !important;
+  }
+
+  .nav-search {
+    flex: 0;
+  }
+
+  .logo {
+    width: 80px;
+    height: 75px;
+  }
 }
 </style> 

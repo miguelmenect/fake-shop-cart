@@ -54,7 +54,7 @@ const handleAddToCart = () => {
 
   if (hasSameCategory) {
     // se ja existe produto da mesma categoria, mostra o toast de warning
-    showWarning("Você não pode adicionar mais de um produto da mesma categoria no carrinho");
+    showWarning("Você não pode adicionar mais de um produto da mesma categoria no carrinho...");
     return; // não adiciona o produto, retornando NADA
   }else{
     addToCart(props.product); //adiciona o produto ao carrinho, produtos esses são os que

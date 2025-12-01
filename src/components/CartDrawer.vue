@@ -114,6 +114,12 @@ const handleClose = () => { //função de fato que chama o evento de fechar o ca
   z-index: 10000;
 }
 
+@media (max-width: 400px) { /*se tela for menor que 401 ele cart-drawer preenche toda largura disponivel */
+.cart-drawer{
+  width: 100% !important;
+}
+}
+
 .cart-header {
   padding-bottom: 8.5px;
   height: 50px;
